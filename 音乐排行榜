@@ -1,0 +1,58 @@
+import requests
+from bs4 import BeautifulSoup
+import os
+
+def mkdir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+
+def get_html(url):
+
+    try:
+        r=requests.get(url,timeout=30)
+        r.raise_for_status()
+        r.encoding=r.apparent_encoding
+        return r.text
+    except:
+        return 'error'
+def savepic(filename,url):
+    content=requests.get(url).content
+    with open(filename,'wb+')as f:
+        f.write(content)
+def get_content(url):
+    html=get_html(url)
+    soup=BeautifulSoup(html,'lxml')
+
+    lins=soup.find_all('li',class_='vitem J_li_toggle_date ')
+    for lin in lins:
+        top=lin.find('div',class_='top_num').text
+        img=lin.find('img')['src']
+        link=lin.find('a',class_='mvname')['href']
+        try:
+            title=lin.find('img')['alt'].text.replace(':','')
+        except:
+            title=lin.find('a',class_='mvname').text.replace(':','')
+        try:
+            actor=lin.find('a',class_='special').text.strip()
+        except:
+            actor='无名'
+        time=lin.find('p',class_='c9').text
+        try:
+            socre=lin.find('h3',class_='asc_score').text
+        except:
+            socre='没有分数'
+        mkdir(title)
+        fil=title+'/'+title+'.png'
+        savepic(fil,img)
+        with open(title+'/'+title+'.txt','a+')as f:
+            f.write('音乐：{}\n 歌手：{}\t {}\n 排名：{}\t 分数：{}\n 链接：{}'.format(title,actor,time,top,socre,link))
+def main():
+    url='http://vchart.yinyuetai.com/vchart/trends?area=ML'
+    get_content(url)
+
+
+if __name__ == '__main__':
+    main()
+
+
