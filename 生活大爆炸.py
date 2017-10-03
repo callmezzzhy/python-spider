@@ -12,7 +12,7 @@ def get_url(url):
 
 def get_data(url,degree):
     for i in range(0,degree):
-        urll=url+'&pn=' + str(50 * i)
+        urll=url+'&pn=' + str(50 * i)  #根据该贴吧url的特点，设置爬取贴吧页数
 
         html=get_url(urll)
         soup=BeautifulSoup(html,'lxml')
