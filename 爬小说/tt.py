@@ -15,11 +15,15 @@ def get_html(url):
 def get_url(url):
     html=get_html(url)
     soup=BeautifulSoup(html,'lxml')
-    links=soup.find_all('div',class_='index_toplist mright mbottom')
+    links=soup.find_all('div',class_='index_toplist mright mbottom') #除了历史分类外其他类型所有小说信息
     urls=[]
     nname=[]
     comment={}
-    history=soup.find_all('div',class_='index_toplist  mbottom')
+    history=soup.find_all('div',class_='index_toplist  mbottom') #历史分类下的小说信息
+    
+    '''
+    各个类型的小说名和链接保存在表格里
+    '''
     for lin in links:
 
         name=lin.find('div',class_='toptab').span.string
@@ -61,6 +65,9 @@ def get_text(url,textname):
     #textname=soup.find('div',id='info').h1.text
     #textname=soup.find('h1').text
     #print(textname)
+    '''
+    找到当篇小说所有章节的链接地址
+    '''
     with open('小说{}.txt'.format(textname),'a')as f:
         f.write(textname)
     for url in ll:
@@ -87,6 +94,10 @@ def get_one_txt(url, txt_name):
         print('someting wrong')
 def main():
     url='http://www.qu.la/paihangbang/'
+    '''
+    在列出的所有小说里找到自己想要下载的小说“择天记”
+    并下载保存在本地
+    '''
     ll,na,dic=get_url(url)
     for i in na:
         if i=='择天记':
