@@ -7,7 +7,7 @@ class HotpingSpider(scrapy.Spider):
     allowed_domains = ['qiushibaike.com']
     start_urls = []
     for i in range(0,35):
-        start_urls.append('https://www.qiushibaike.com/8hr/page/'+str(i)+'/')
+        start_urls.append('https://www.qiushibaike.com/8hr/page/'+str(i)+'/')  #根据网站的特性，设置爬取页数
 
     def parse(self, response):
         item=BaikeItem()
