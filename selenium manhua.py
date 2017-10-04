@@ -2,8 +2,14 @@ from selenium import webdriver
 import os
 import requests
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+'''
+为PhantomJs浏览器设置User-Agent
+'''
 da=dict(DesiredCapabilities.PHANTOMJS)
 da["phanjomjs.page.settings.userAgent"]=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0 ")
+'''
+创建目录
+'''
 def mkdir(path):
     if not os.path.exists(path):
         os.mkdir(path)
@@ -42,7 +48,10 @@ def get_picture(commics):
         pages=brower.find_elements_by_tag_name('option')
         next_page=brower.find_element_by_xpath('//*[@id="AD_j1"]/div/a[4]')
         for i in range(len(pages)):
-            page_url=brower.find_element_by_xpath('/html/body/table/tbody/tr/td/a/img').get_attribute('src')
+            '''
+            #xpath 一级一级找到img节点，获取src属性值，即漫画图片地址
+            ''''
+            page_url=brower.find_element_by_xpath('/html/body/table/tbody/tr/td/a/img').get_attribute('src') 
             #fil=brower.find_element_by_xpath('/html/body/div[@class="wrap"]/span[1]/').text
             print(page_url)
             filename=dirnames+'/'+str(i)+'.png'
