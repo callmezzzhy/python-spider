@@ -17,7 +17,7 @@ ITEM_PIPELINES = {
 SPIDER_MODULES = ['baike.spiders']
 NEWSPIDER_MODULE = 'baike.spiders'
 DOWNLOADER_MIDDLEWARES = {
-    'baike.middlewares.customUserAgent.RandomUserAgent': 20,
+    'baike.middlewares.customUserAgent.RandomUserAgent': 20,    #写中间插件反爬虫
     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware':None,
 }
 
