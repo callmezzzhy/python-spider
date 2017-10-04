@@ -1,5 +1,5 @@
 from zhua12360 import station
-from 邮箱 import post
+from qqsmtp import post
 import test311
 import requests
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -105,6 +105,8 @@ def train_info(url,js,rt,bigsr):
     try:
         #r=requests.get(url,headers=headers,verify=False)
         #print(r)
+        second={}
+        start={}
         raw_trains=r.json()['data']['result']
         print(raw_trains)
         print('正在：')
@@ -120,6 +122,7 @@ def train_info(url,js,rt,bigsr):
             to_station_name=code_dict[to_station_code]
             print(to_station_name)
             start_time=data_list[8]
+            start[train_num]=start_time
             print(start_time)
             arrive_time=data_list[9]
             print(arrive_time)
@@ -128,6 +131,7 @@ def train_info(url,js,rt,bigsr):
             first_seat=data_list[31]or'--'
             print(first_seat)
             second_seat=data_list[30]or'--'
+            second[train_num]=second_seat
             print(second_seat)
             soft_seat=data_list[23]or'--'
             print(soft_seat)
@@ -152,7 +156,7 @@ def train_info(url,js,rt,bigsr):
             finally:
                 db.close()
             info_list.append(info)
-        return info_list
+        return info_list,second,start
     except:
         return '噢噢，出现错误啦！'
 '''
@@ -221,11 +225,29 @@ def main():
     rt=l['route']
     bgsr=l['BIGipServerotn']
     text=input("请输入要查询车票信息：")
-    info=train_info(get_api_url(text),js,rt,bgsr)
+    starttime=int(input("请输入查询车票最早始发整点时间："))
+    endtime=int(input("请输入查询车票最晚始发整点时间："))
+    '''
+    这里我简单将查询到的二等座对应车次的信息保存在了second，车次对应的发车时间保存在了time
+    根据用户输入想查询的发车时间段，提取出有用的车次信息，然后根据车次信息去second字典里提出二等座的座位情况
+    判断二等座是否为：无或者‘--’信息，如果不是则输出车次，发车时间和二等座剩余信息，保存在inff列表里
+    假如inff有append信息，调用发邮箱函数，将这些信息及时通过邮箱发送给用户
+    '''
+    info,second,time=train_info(get_api_url(text),js,rt,bgsr)
+    inff=[]
+    for key ,value in time.items():
+        va=(str(value).split(':'))[0]
+        if int(va) in range(starttime,endtime):
+                if not sencond[key] =='无'or not sencond[key]=='--':
+                    inf1=("车次:{} 发车时间：{} 二等座剩余：{}".format(key,value,sencond[key]))
+                    inff.append(inf1)
+    if not inff==[]:                
+        post(inff)
+    print(inff)
     for content in info:
         with open('车票查询.txt','a+')as f:
             f.write(content)
-    #post()
+    
 if __name__=='__main__':
     main()
 
