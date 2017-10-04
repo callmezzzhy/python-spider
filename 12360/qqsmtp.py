@@ -1,7 +1,7 @@
 from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 from email.header import Header
-def post1(data):
+def post(data):
     host_server='smtp.qq.com' 
     sender_qq='xxxxxxx                           #发送方qq号
     pwd='xxxxxx'                       #qq开启第三方smtp 验证码
