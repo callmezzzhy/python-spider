@@ -18,7 +18,10 @@ def get_data(url):
     for link in bisai:
         time=link.find('div',class_='whenm').text.strip()
         name=link.find_all('span',class_='team_name')
-
+        '''
+        判断是否存在队名，因为网站的特性，有时候该网站的队伍一名字会为空
+        （也可以用try，except来判断）
+        '''
         if name[0].string[0:3]=='php':
             team1_name='无队名'
         else:

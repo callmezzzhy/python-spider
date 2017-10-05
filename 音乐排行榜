@@ -1,11 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 import os
-
+'''
+创建目录
+'''
 def mkdir(path):
     if not os.path.exists(path):
         os.mkdir(path)
-
 
 def get_html(url):
 
@@ -16,30 +17,45 @@ def get_html(url):
         return r.text
     except:
         return 'error'
+'''
+
+保存图片
+'''
 def savepic(filename,url):
     content=requests.get(url).content
     with open(filename,'wb+')as f:
         f.write(content)
+        
+'''
+解析html，找到想要的元素
+'''
 def get_content(url):
     html=get_html(url)
     soup=BeautifulSoup(html,'lxml')
 
-    lins=soup.find_all('li',class_='vitem J_li_toggle_date ')
+    lins=soup.find_all('li',class_='vitem J_li_toggle_date ')   #排行榜每一条信息内容都所包含在li节点
     for lin in lins:
-        top=lin.find('div',class_='top_num').text
-        img=lin.find('img')['src']
-        link=lin.find('a',class_='mvname')['href']
+        top=lin.find('div',class_='top_num').text   #找到音乐排行榜名次
+        img=lin.find('img')['src']                     #找到封面图片地址
+        link=lin.find('a',class_='mvname')['href']         #找到听音乐链接地址
+        '''
+        尝试在img节点中找到音乐名字
+        如果没有，则去class属性为mvname的a节点中寻找
+        '''
         try:
-            title=lin.find('img')['alt'].text.replace(':','')
+            title=lin.find('img')['alt'].text.replace(':','')   
         except:
             title=lin.find('a',class_='mvname').text.replace(':','')
+        '''
+        尝试找到歌手名字
+        '''
         try:
             actor=lin.find('a',class_='special').text.strip()
         except:
             actor='无名'
-        time=lin.find('p',class_='c9').text
+        time=lin.find('p',class_='c9').text      #音乐排行发布时间点
         try:
-            socre=lin.find('h3',class_='asc_score').text
+            socre=lin.find('h3',class_='asc_score').text    #尝试找到排行音乐打分数
         except:
             socre='没有分数'
         mkdir(title)
